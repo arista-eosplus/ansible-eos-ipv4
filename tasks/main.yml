@@ -1,18 +1,35 @@
 ---
-- name: Configure Arista EOS IPv4 interface
-  eos_ipinterface:
-    name={{ item.name }}
-    address={{ item.address|default(omit) }}
-    mtu={{ item.mtu|default(omit) }}
-    state={{ item.state|default(omit) }}
-    config={{ eos_eapi_config|default(omit) }}
-    username={{ eos_eapi_username|default(omit) }}
-    password={{ eos_eapi_password|default(omit) }}
-    enablepwd={{ eos_eapi_enablepwd|default(omit) }}
-    transport={{ eos_eapi_transport|default(omit) }}
-    connection={{ eos_eapi_connection|default(omit) }}
-    host={{ eos_eapi_host|default(omit) }}
-    port={{ eos_eapi_port|default(omit) }}
-    debug={{ eos_debug|default(omit) }}
-  with_items: ip_interfaces
-  when: ip_interfaces is defined
+# Force CLI for eos_command to ensure running config is returned properly
+- name: Gather EOS configuration
+  eos_command:
+    commands='show running-config all'
+    provider={{ provider|default(omit) }}
+    auth_pass={{ auth_pass|default(omit) }}
+    authorize={{ authorize|default(omit) }}
+    host={{ host|default(omit) }}
+    password={{ password|default(omit) }}
+    port={{ port|default(omit) }}
+    transport='cli'
+    use_ssl={{ use_ssl|default(omit) }}
+    username={{ username|default(omit) }}
+  register: output
+
+- set_fact:
+    base_config='{{ output.result[0] }}'
+
+- name: Arista EOS VLAN resources
+  eos_template:
+    src=ipv4.j2
+    include_defaults=True
+    config={{ base_config|default(omit) }}
+    provider={{ provider|default(omit) }}
+    auth_pass={{ auth_pass|default(omit) }}
+    authorize={{ authorize|default(omit) }}
+    host={{ host|default(omit) }}
+    password={{ password|default(omit) }}
+    port={{ port|default(omit) }}
+    transport={{ transport|default(omit) }}
+    use_ssl={{ use_ssl|default(omit) }}
+    username={{ username|default(omit) }}
+  when: vlans is defined
+  with_items: '{{ vlans }}'
