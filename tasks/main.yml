@@ -2,7 +2,7 @@
 # Force CLI for eos_command to ensure running config is returned properly
 - name: Gather EOS configuration
   eos_command:
-    commands='show running-config all'
+    commands='show running-config all | exclude \.\*'
     provider={{ provider|default(omit) }}
     auth_pass={{ auth_pass|default(omit) }}
     authorize={{ authorize|default(omit) }}
@@ -17,7 +17,7 @@
 - set_fact:
     base_config='{{ output.result[0] }}'
 
-- name: Arista EOS VLAN resources
+- name: Arista EOS IPv4 resources
   eos_template:
     src=ipv4.j2
     include_defaults=True
@@ -31,5 +31,5 @@
     transport={{ transport|default(omit) }}
     use_ssl={{ use_ssl|default(omit) }}
     username={{ username|default(omit) }}
-  when: vlans is defined
-  with_items: '{{ vlans }}'
+  when: ip_interfaces is defined
+  with_items: '{{ ip_interfaces }}'

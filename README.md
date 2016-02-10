@@ -24,8 +24,9 @@ ansible-galaxy install arista.eos-ipv4
 Requirements
 ------------
 
-Requires the arista.eos role.  If you have not worked with the arista.eos role,
-consider following the [Quickstart][quickstart] guide.
+Requires an SSH connection for connectivity to your Arista device. You can use
+any of the built-in eos connection variables, or the convenience ``provider``
+dictionary.
 
 Role Variables
 --------------
@@ -50,15 +51,20 @@ Note: Asterisk (*) denotes the default value if none specified
 Dependencies
 ------------
 
-The eos-ipv4 role utilizes modules distributed within the arista.eos role.
-It also requires that the underlying interface is created before you set
+This role requires the underlying interface to be created before you set
 an IP address or the MTU. This implies that we must use the arista.eos-interfaces
-role in conjunction with arista.eos-ipv4.  It's also important that
-arista.eos-interfaces is included in the playbook before the ipv4 role.
+role in conjunction with arista.eos-ipv4.  You do not need to include the role
+in your playbook, simply create the ``interfaces`` list documented in the
+arista.eos-interfaces README.
+
+The arista.eos-ipv4 role is built on modules included in the core Ansible code.
+These modules were added in ansible version 2.1.0.
+
+- Ansible 2.1.0
+- arista.eos-interfaces
+
 See the example below for more information.
 
-- arista.eos version 1.2.0
-- arista.eos-interfaces
 
 Example Playbook
 ----------------
@@ -108,7 +114,6 @@ A simple playbook to configure BGP, leaf.yml
 
     - hosts: leafs
       roles:
-        - arista.eos-interfaces
         - arista.eos-ipv4
 
 Then run with:
