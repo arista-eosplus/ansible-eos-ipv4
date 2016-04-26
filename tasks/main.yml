@@ -25,15 +25,15 @@
   eos_template:
     src: ipv4.j2
     include_defaults: True
-    config: {{ base_config|default(omit) }}
-    provider: {{ provider|default(omit) }}
-    auth_pass: {{ auth_pass|default(omit) }}
-    authorize: {{ authorize|default(omit) }}
-    host: {{ host|default(omit) }}
-    password: {{ password|default(omit) }}
-    port: {{ port|default(omit) }}
-    transport: {{ transport|default(omit) }}
-    use_ssl: {{ use_ssl|default(omit) }}
-    username: {{ username|default(omit) }}
+    config: "{{ base_config|default(omit) }}"
+    provider: "{{ provider|default(omit) }}"
+    auth_pass: "{{ auth_pass|default(omit) }}"
+    authorize: "{{ authorize|default(omit) }}"
+    host: "{{ host|default(omit) }}"
+    password: "{{ password|default(omit) }}"
+    port: "{{ port|default(omit) }}"
+    transport: "{{ transport|default(omit) }}"
+    use_ssl: "{{ use_ssl|default(omit) }}"
+    username: "{{ username|default(omit) }}"
   when: ip_interfaces is defined
   with_items: '{{ ip_interfaces }}'
