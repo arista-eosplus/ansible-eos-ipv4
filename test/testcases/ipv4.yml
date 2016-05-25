@@ -1,0 +1,9 @@
+---
+defaults:
+  module: ipv4
+
+testcases:
+  - name: Add nonexistent interfaces
+    arguments:
+    setup: |
+    present: |
