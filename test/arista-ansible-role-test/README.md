@@ -178,7 +178,7 @@ directory in the role repo.
   * Always make sure you have the latest changes for the framework repo
     in your local repository by issuing the command
     
-      git subtree pull --prefix=test/arista-ansible-role-test --squash role-test master
+        git subtree pull --prefix=test/arista-ansible-role-test --squash role-test master
     
     at the root of your role repo.
   * Please keep commits to files in the framework directory 
@@ -192,7 +192,7 @@ directory in the role repo.
   * To push the changes to the framework repo, enter the following command
     at the root of the role repo
     
-      git subtree push --prefix=test/arista-ansible-role-test --squash role-test <branch>
+        git subtree push --prefix=test/arista-ansible-role-test --squash role-test <branch>
     
     where `<branch>` is the name of a branch on the framework repo where the
     changes will be pushed. This branch will be created if it does not exist.
