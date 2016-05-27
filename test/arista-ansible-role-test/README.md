@@ -9,6 +9,8 @@ Arista Roles for Ansible - Development Guidelines
 2. [Developing Arista Roles For Ansible] (#developing-arista-roles-for-ansible)
     * [Role Development Guidelines] (#role-development-guidelines)
     * [Role Test Development] (#role-test-development)
+    * [Development for arista-ansible-role-test] (#Development for arista-ansible-role-test)
+
 
 Running role tests
 ------------------
@@ -158,6 +160,41 @@ Developing Arista roles for Ansible
 
 
 *XXX Information specific to writing test cases and ensuring the test framework has been included as a submodule goes here*
+
+#### Development for arista-ansible-role-test
+
+Because the arista-ansible-role-test framework repository has been included
+as a subtree, direct modification of the test framework files is possible.
+If you need to make changes to the framework itself, please follow the steps
+outlined below, to make the propagation of the changes to the main 
+framework repo as smooth as possible.
+
+For the purposes of the instructions below, `role repo` refers to the base 
+repository of the role being worked on (e.g. ansible-eos-vxlan), and
+`framework repo` refers to the arista-ansible-role-test repository that was
+imported as a subtree, i.e. everything under the /test/arista-ansible-role-test
+directory in the role repo.
+  
+  * Always make sure you have the latest changes for the framework repo
+    in your local repository by issuing the command
+      git subtree pull --prefix=test/arista-ansible-role-test --squash role-test master
+    at the root of your role repo.
+  * Please keep commits to files in the framework directory 
+    (test/arista-ansible-role-test) separate from commits to the rest
+    of the role repo. This helps keep commit messages specific
+    to the framework repo itself.
+  * Changes to the framework files must be committed to the role repo
+    before being pushed to the framework repo. (git commit the framework 
+    changes as part of the role repo before pushing the changes to the
+    framework repo) 
+  * To push the changes to the framework repo, enter the following command
+    at the root of the role repo
+      git subtree push --prefix=test/arista-ansible-role-test --squash role-test <branch>
+    where `<branch>` is the name of a branch on the framework repo where the
+    changes will be pushed. This branch will be created if it does not exist.
+  * Make a pull request for the changes by visiting the [framework repo website]
+    (https://github.com/arista-eosplus/arista-ansible-role-test.git). There
+    you may create a new pull request for the branch you pushed the changes to.
 
 
 License
