@@ -3,7 +3,292 @@ defaults:
   module: ipv4
 
 testcases:
-  - name: Add nonexistent interfaces
+  - name: Add nonexistent ip interfaces
     arguments:
+      ip_interfaces:
+        - name: Ethernet2
+          address: 10.1.1.2/31
+          mtu: 9000
+        - name: Ethernet3
+          address: 10.1.1.0/31
+          mtu: 9000
+        - name: Loopback0
+          address: 1.1.1.1/32
+        - name: Loopback1
+          address: 2.2.2.1/32
+        - name: Vlan20
+          address: 10.2.1.3/31
+          mtu: 1400
+        - name: Vlan40
+          address: 10.4.1.0/31
+          mtu: 1400
     setup: |
+      interface Ethernet2
+      switchport
+      default ip address
+      default mtu
+      interface Ethernet3
+      switchport
+      default ip address
+      default mtu
+      no interface Loopback0
+      no interface Loopback1
+      no interface Vlan20
+      no interface Vlan40
     present: |
+      interface Ethernet2
+         ip address 10.1.1.2/31
+         mtu 9000
+      interface Ethernet3
+         ip address 10.1.1.0/31
+         mtu 9000
+      interface Loopback0
+         ip address 1.1.1.1/32
+      interface Loopback1
+         ip address 2.2.2.1/32
+      interface Vlan20
+         ip address 10.2.1.3/31
+         mtu 1400
+      interface Vlan40
+         ip address 10.4.1.0/31
+         mtu 1400
+
+  - name: Remove existing ip interfaces
+    arguments:
+      ip_interfaces:
+        - name: Ethernet2
+          state: absent
+        - name: Ethernet3
+          state: absent
+        - name: Loopback0
+          state: absent
+        - name: Loopback1
+          state: absent
+        - name: Vlan20
+          state: absent
+        - name: Vlan40
+          state: absent
+    setup: |
+      interface Ethernet2
+      no switchport
+      ip address 10.1.1.2/31
+      mtu 9000
+      interface Ethernet3
+      no switchport
+      ip address 10.1.1.0/31
+      mtu 9000
+      interface Loopback0
+      ip address 1.1.1.1/32
+      interface Loopback1
+      ip address 2.2.2.1/32
+      interface Vlan20
+      ip address 10.2.1.3/31
+      interface Vlan40
+      ip address 10.4.1.0/31
+    present: |
+      interface Ethernet2
+         switchport mode access
+         no ip address
+      interface Ethernet3
+         switchport mode access
+         no ip address
+      interface Loopback0
+         no ip address
+      interface Loopback1
+         no ip address
+      interface Vlan20
+         no ip address
+      interface Vlan40
+         no ip address
+    absent: |
+      interface Ethernet2
+         ip address 10.1.1.2/31
+         mtu 9000
+      interface Ethernet3
+         ip address 10.1.1.0/31
+         mtu 9000
+      interface Loopback0
+         ip address 1.1.1.1/32
+      interface Loopback1
+         ip address 2.2.2.1/32
+      interface Vlan20
+         ip address 10.2.1.3/31
+         mtu 1400
+      interface Vlan40
+         ip address 10.4.1.0/31
+         mtu 1400
+
+  - name: Modify existing ip interfaces
+    arguments:
+      ip_interfaces:
+        - name: Ethernet2
+          address: 10.1.1.2/31
+          mtu: 9000
+        - name: Ethernet3
+          address: 10.1.1.0/31
+          mtu: 9000
+        - name: Loopback0
+          address: 1.1.1.1/32
+        - name: Loopback1
+          address: 2.2.2.1/32
+        - name: Vlan20
+          address: 10.2.1.3/31
+          mtu: 1400
+        - name: Vlan40
+          address: 10.4.1.0/31
+          mtu: 1400
+    setup: |
+      no interface Loopback0
+      no interface Loopback1
+      no interface Vlan20
+      no interface Vlan40
+      interface Ethernet2
+      no switchport
+      ip address 10.1.1.50/24
+      mtu 7500
+      interface Ethernet3
+      no switchport
+      ip address 10.2.2.60/24
+      mtu 7500
+      interface Loopback0
+      ip address 6.6.6.6/32
+      interface Loopback1
+      ip address 7.7.7.7/32
+      interface Vlan20
+      ip address 10.20.1.3/31
+      mtu 1200
+      interface Vlan40
+      ip address 10.40.1.0/31
+      mtu 1300
+    present: |
+      interface Ethernet2
+         ip address 10.1.1.2/31
+         mtu 9000
+      interface Ethernet3
+         ip address 10.1.1.0/31
+         mtu 9000
+      interface Loopback0
+         ip address 1.1.1.1/32
+      interface Loopback1
+         ip address 2.2.2.1/32
+      interface Vlan20
+         ip address 10.2.1.3/31
+         mtu 1400
+      interface Vlan40
+         ip address 10.4.1.0/31
+         mtu 1400
+    absent: |
+      interface Ethernet2
+         ip address 10.1.1.50/24
+         mtu 7500
+      interface Ethernet3
+         ip address 10.1.1.60/24
+         mtu 7500
+      interface Loopback0
+         ip address 6.6.6.6/32
+      interface Loopback1
+         ip address 7.7.7.7/32
+      interface Vlan20
+         ip address 10.20.1.3/31
+         mtu 1200
+      interface Vlan40
+         ip address 10.40.1.0/31
+         mtu 1300
+
+  - name: Add, remove, modify ip interfaces in one call
+    arguments:
+      ip_interfaces:
+        # Add interfaces
+        - name: Ethernet2
+          address: 10.1.1.2/31
+          mtu: 9000
+        - name: Loopback0
+          address: 1.1.1.1/32
+        - name: Vlan20
+          address: 10.2.1.3/31
+          mtu: 1400
+        # Remove interfaces
+        - name: Ethernet3
+          state: absent
+        - name: Loopback1
+          state: absent
+        - name: Vlan40
+          state: absent
+        # Modify interfaces
+        - name: Ethernet4
+          address: 10.1.1.4/31
+          mtu: 9000
+        - name: Loopback2
+          address: 3.3.3.3/32
+        - name: Vlan60
+          address: 10.3.1.3/31
+          mtu: 1400
+    setup: |
+      interface Ethernet2
+      switchport
+      default ip address
+      default mtu
+      no interface Loopback0
+      no interface Vlan20
+      interface Ethernet3
+      no switchport
+      ip address 10.2.2.60/24
+      mtu 7500
+      no interface Loopback1
+      interface Loopback1
+      ip address 7.7.7.7/32
+      no interface Vlan40
+      interface Vlan40
+      ip address 10.40.1.0/31
+      mtu 1300
+      interface Ethernet4
+      no switchport
+      ip address 10.3.3.80/24
+      mtu 7500
+      interface Loopback2
+      ip address 9.9.9.9/32
+      no interface Vlan60
+      interface Vlan60
+      ip address 10.60.1.0/31
+      mtu 1250
+    present: |
+      interface Ethernet2
+         ip address 10.1.1.2/31
+         mtu 9000
+      interface Loopback0
+         ip address 1.1.1.1/32
+      interface Vlan20
+         ip address 10.2.1.3/31
+         mtu 1400
+      interface Ethernet3
+         switchport mode access
+         no ip address
+      interface Loopback1
+         no ip address
+      interface Vlan40
+         no ip address
+      interface Ethernet4
+         ip address 10.1.1.4/31
+         mtu 9000
+      interface Loopback2
+         ip address 3.3.3.3/32
+      interface Vlan60
+         ip address 10.3.1.3/31
+         mtu 1400
+    absent: |
+      interface Ethernet3
+         ip address 10.1.1.60/24
+         mtu 7500
+      interface Loopback1
+         ip address 7.7.7.7/32
+      interface Vlan40
+         ip address 10.40.1.0/31
+         mtu 1300
+      interface Ethernet4
+         ip address 10.3.3.80/24
+         mtu 7500
+      interface Loopback2
+         ip address 9.9.9.9/32
+      interface Vlan60
+         ip address 10.60.1.0/31
+         mtu 1250

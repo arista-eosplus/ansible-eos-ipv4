@@ -2,38 +2,38 @@
 - name: Gather EOS configuration
   eos_command:
     commands: 'show running-config all'
-    provider: "{{ provider|default(omit) }}"
-    auth_pass: "{{ auth_pass|default(omit) }}"
-    authorize: "{{ authorize|default(omit) }}"
-    host: "{{ host|default(omit) }}"
-    password: "{{ password|default(omit) }}"
-    port: "{{ port|default(omit) }}"
+    provider: "{{ provider | default(omit) }}"
+    auth_pass: "{{ auth_pass | default(omit) }}"
+    authorize: "{{ authorize | default(omit) }}"
+    host: "{{ host | default(omit) }}"
+    password: "{{ password | default(omit) }}"
+    port: "{{ port | default(omit) }}"
     transport: 'cli'
-    use_ssl: "{{ use_ssl|default(omit) }}"
-    username: "{{ username|default(omit) }}"
+    use_ssl: "{{ use_ssl | default(omit) }}"
+    username: "{{ username | default(omit) }}"
   register: output
-  no_log: "{{ no_log|default(true) }}"
+  no_log: "{{ no_log | default(true) }}"
   when: _eos_config is not defined or not _eos_config
 
 - name: Save EOS configuration
   set_fact:
     _eos_config: "{{ output.stdout[0] }}"
-  no_log: "{{ no_log|default(true) }}"
+  no_log: "{{ no_log | default(true) }}"
   when: _eos_config is not defined or not _eos_config
 
 - name: Arista EOS IPv4 resources
   eos_template:
     src: ipv4.j2
     include_defaults: True
-    config: "{{ base_config|default(omit) }}"
-    provider: "{{ provider|default(omit) }}"
-    auth_pass: "{{ auth_pass|default(omit) }}"
-    authorize: "{{ authorize|default(omit) }}"
-    host: "{{ host|default(omit) }}"
-    password: "{{ password|default(omit) }}"
-    port: "{{ port|default(omit) }}"
-    transport: "{{ transport|default(omit) }}"
-    use_ssl: "{{ use_ssl|default(omit) }}"
-    username: "{{ username|default(omit) }}"
+    config: "{{ base_config | default(omit) }}"
+    provider: "{{ provider | default(omit) }}"
+    auth_pass: "{{ auth_pass | default(omit) }}"
+    authorize: "{{ authorize | default(omit) }}"
+    host: "{{ host | default(omit) }}"
+    password: "{{ password | default(omit) }}"
+    port: "{{ port | default(omit) }}"
+    transport: "{{ transport | default(omit) }}"
+    use_ssl: "{{ use_ssl | default(omit) }}"
+    username: "{{ username | default(omit) }}"
   when: ip_interfaces is defined
   with_items: '{{ ip_interfaces }}'
