@@ -23,6 +23,14 @@ CONFIG_BACKUP = '_eos_role_test_{}'.format(ROLE)
 EOS_ROLE_PLAYBOOK = 'test/arista-ansible-role-test/eos_role.yml'
 EOS_MODULE_PLAYBOOK = 'test/arista-ansible-role-test/eos_module.yml'
 
+LOG_FILE = '{}/roletest.log'.format(HERE)
+try:
+    os.remove(LOG_FILE)
+except OSError:
+    pass
+LOG = open(LOG_FILE, 'w')
+
+SEPARATOR = '    ' + '*' * 50
 
 class TestCase(object):
     def __init__(self, **kwargs):
@@ -63,6 +71,7 @@ class TestModule(object):
             expected = int(self.testcase.changed)
             msg = ("First pass role execution reported {} task change(s), "
                    "expected {}".format(reported, expected))
+            self.output(msg)
             assert reported == expected, msg
 
         if self.testcase.idempotent:
@@ -74,6 +83,7 @@ class TestModule(object):
                 msg = (
                     "Second pass role execution reported {} task change(s), "
                     "expected 0".format(reported))
+                self.output(msg)
                 assert not reported, msg
 
         if self.testcase.present:
@@ -83,11 +93,11 @@ class TestModule(object):
             for device in response:
                 hostname = device.keys()[0]
                 # Result should contain an empty list of updates
-                separator = " ---\n"
+                delim = " ---\n"
                 updates = device[hostname]['updates']
                 msg = ("{} - Expected configuration\n{}{}\n{}not found "
-                       "on device '{}'".format(desc, separator,
-                                               '\n'.join(updates), separator,
+                       "on device '{}'".format(desc, delim,
+                                               '\n'.join(updates), delim,
                                                hostname))
                 assert device[hostname]['updates'] == [], msg
                 # Result should show no changes
@@ -118,12 +128,20 @@ class TestModule(object):
                 assert updates == absent, msg
 
     def setUp(self):
+        print("\n{}\n".format(SEPARATOR) +
+              "  See run log for complete output:\n  {}".format(LOG_FILE) +
+              "\n{}\n".format(SEPARATOR))
+
+        LOG.write("\n\n\n{}\n".format(SEPARATOR) +
+                  "  Begin log for {}".format(self.description) +
+                  "\n{}\n\n".format(SEPARATOR))
+
         if self.testcase.setup:
             self.output('Running test case setup commands')
             setup_cmds = self.testcase.setup
             if not isinstance(setup_cmds, list):
                 setup_cmds = setup_cmds.splitlines()
-            self.output("{}\n".format(setup_cmds))
+            self.output("{}".format(setup_cmds))
 
             args = {
                 'module': 'eos_command',
@@ -137,8 +155,8 @@ class TestModule(object):
                                                   arguments=arguments)
 
             if ret_code != 0:
-                self.output("Playbook stdout:\n\n{}".format(out))
-                self.output("Playbook stderr:\n\n{}".format(err))
+                LOG.write("Playbook stdout:\n\n{}".format(out))
+                LOG.write("Playbook stderr:\n\n{}".format(err))
                 raise
 
     def tearDown(self):
@@ -169,15 +187,17 @@ class TestModule(object):
     @classmethod
     def output(cls, text):
         print '>>', str(text)
+        LOG.write('++ {}'.format(text) + '\n')
 
     def run_module(self):
         (retcode, out, _) = self.execute_module()
         out_stripped = re.sub(r'\"config\": \"! Command:.*\\nend\"',
                               '\"config\": \"--- stripped for space ---\"',
                               out)
-        self.output("PLaybook stdout:\n\n{}".format(out_stripped))
-        self.output("Return code: {}, Expected code: {}".format(retcode, self.testcase.exitcode))
-        assert retcode == self.testcase.exitcode
+        LOG.write("PLaybook stdout:\n\n{}".format(out_stripped))
+        msg = "Return code: {}, Expected code: {}".format(retcode, self.testcase.exitcode)
+        self.output(msg)
+        assert retcode == self.testcase.exitcode, msg
         return self.parse_response(out)
 
     def execute_module(self):
@@ -232,6 +252,7 @@ class TestModule(object):
         (ret_code, out, _) = ansible_playbook(EOS_MODULE_PLAYBOOK,
                                               arguments=arguments,
                                               options=['--check'])
+        LOG.write(out)
         assert ret_code == 0, "Validation playbook failed execution"
         return self.parse_response(out, validate=True)
 
@@ -246,7 +267,9 @@ def filter_modules(modules, filenames):
 def setup():
     print >> sys.stderr, "Test Suite Setup:"
 
-    print >> sys.stderr, "  Backing up running-config on nodes ..."
+    run_backup = "  Backing up running-config on nodes ..."
+    print >> sys.stderr, run_backup
+    LOG.write('++ ' + run_backup.strip())
     args = {
         'module': 'eos_command',
         'description': 'Back up running-config on node',
@@ -261,8 +284,8 @@ def setup():
                                           arguments=arguments)
 
     if ret_code != 0:
-        print ">> ansible-playbook {} stdout:\n".format(EOS_MODULE_PLAYBOOK), out
-        print ">> ansible-playbook {} stddrr:\n".format(EOS_MODULE_PLAYBOOK), err
+        LOG.write(str(">> ansible-playbook {} stdout:\n".format(EOS_MODULE_PLAYBOOK), out))
+        LOG.write(str(">> ansible-playbook {} stddrr:\n".format(EOS_MODULE_PLAYBOOK), err))
         teardown()
         raise RuntimeError("Error in Test Suite Setup")
 
@@ -302,7 +325,6 @@ def teardown():
     no_teardown = os.environ.get('NO_ANSIBLE_ROLE_TEST_TEARDOWN')
 
     if no_teardown:
-        separator = '    ' + '*' * 50
         print >> sys.stderr, ("{}\n"
                               "  Skipping test suite teardown due to "
                               "NO_ANSIBLE_ROLE_TEST_TEARDOWN\n"
@@ -311,10 +333,12 @@ def teardown():
                               "  - configure terminal\n"
                               "  - configure replace {}\n"
                               "  - delete {}\n"
-                              "{}".format(separator, CONFIG_BACKUP,
-                                          CONFIG_BACKUP, separator))
+                              "{}".format(SEPARATOR, CONFIG_BACKUP,
+                                          CONFIG_BACKUP, SEPARATOR))
     else:
-        print >> sys.stderr, "  Restoring running-config on nodes ..."
+        restore_backup = "  Restoring running-config on nodes ..."
+        print >> sys.stderr, restore_backup
+        LOG.write('++ ' + restore_backup.strip())
         args = {
             'module': 'eos_command',
             'description': 'Restore running-config from backup',
@@ -336,7 +360,9 @@ def teardown():
                   ">> stderr: {}\n".format(EOS_MODULE_PLAYBOOK, arguments, out, err)
             warnings.warn(msg)
 
-        print >> sys.stderr, "  Deleting backup config from nodes ..."
+        delete_backup = "  Deleting backup config from nodes ..."
+        print >> sys.stderr, delete_backup
+        LOG.write('++ ' + delete_backup.strip())
         args = {
             'module': 'eos_command',
             'description': 'Delete backup config file from node',
@@ -380,7 +406,15 @@ def ansible_playbook(playbook, arguments=None, options=None):
         command.append(opt)
     command.append('-vvv')
 
-    print >> sys.stdout, "\nAnsible playbook command:\n{}\n".format(command)
+    # Format the command string for output on error - for easier
+    # copy/paste for manual run
+    cmdstr = ''
+    for segment in command:
+        if segment[0] == '{':
+            cmdstr = cmdstr + "\'{}\' ".format(segment)
+        else:
+            cmdstr = cmdstr + "{} ".format(segment)
+    LOG.write("-- Ansible playbook command:\n-- {}\n".format(cmdstr))
 
     stdout = subprocess.PIPE
     stderr = subprocess.PIPE
