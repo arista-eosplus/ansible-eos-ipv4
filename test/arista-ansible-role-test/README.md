@@ -127,7 +127,7 @@ Developing Arista roles for Ansible
 * Import the arista-ansible-role-test repository into the role as a subtree.
   From the root of the role directory, issue the following commands:
   
-  * git remote add role-test https://github.com/arista-eosplus/arista-ansible-role-test.git  
+  * git remote add role-test https[]()://github.com/arista-eosplus/arista-ansible-role-test.git  
   * git subtree add --prefix=test/arista-ansible-role-test --squash role-test master  
     
     ```
@@ -177,7 +177,9 @@ directory in the role repo.
   
   * Always make sure you have the latest changes for the framework repo
     in your local repository by issuing the command
+    
       git subtree pull --prefix=test/arista-ansible-role-test --squash role-test master
+    
     at the root of your role repo.
   * Please keep commits to files in the framework directory 
     (test/arista-ansible-role-test) separate from commits to the rest
@@ -189,7 +191,9 @@ directory in the role repo.
     framework repo) 
   * To push the changes to the framework repo, enter the following command
     at the root of the role repo
+    
       git subtree push --prefix=test/arista-ansible-role-test --squash role-test <branch>
+    
     where `<branch>` is the name of a branch on the framework repo where the
     changes will be pushed. This branch will be created if it does not exist.
   * Make a pull request for the changes by visiting the [framework repo website]
