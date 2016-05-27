@@ -138,8 +138,8 @@ Developing Arista roles for Ansible
     remote: Total 59 (delta 14), reused 0 (delta 0), pack-reused 35  
     Unpacking objects: 100% (59/59), done.  
     From https://github.com/arista-eosplus/arista-ansible-role-test  
-     &nbsp* branch            master     -> FETCH_HEAD
-     &nbsp* [new branch]      master     -> role-test/master
+      * branch            master     -> FETCH_HEAD
+      * [new branch]      master     -> role-test/master
     Added dir 'test/arista-ansible-role-test'  
     ```
 

@@ -173,7 +173,7 @@ Then run with:
 Developer Information
 ------------
 
-Development contributions are welcome. Please see [test/arista-ansible-role-test/README](test/arista-ansible-role-test/README.md) *Arista Roles for Ansible - Development Guidelines* for additional information, including running role tests for development.
+Development contributions are welcome. Please see *Arista Roles for Ansible - Development Guidelines* ([test/arista-ansible-role-test/README](test/arista-ansible-role-test/README.md)) for additional information, including how to develop and run test cases for role development.
 
 
 
