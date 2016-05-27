@@ -1,5 +1,5 @@
-Arista Roles for Ansible Development Guidelines
-===============================================
+Arista Roles for Ansible - Development Guidelines
+=================================================
 
 #### Table of Contents
 
@@ -122,8 +122,8 @@ Developing Arista roles for Ansible
   * test/fixtures/hosts
   * test/testcases/
 
-* Import the arista-ansible-role-test repository into the role as a new
-  submodule. From the root of the role directory, issue the following commands:
+* Import the arista-ansible-role-test repository into the role as a subtree.
+  From the root of the role directory, issue the following commands:
   
   * git remote add role-test https://github.com/arista-eosplus/arista-ansible-role-test.git  
   * git subtree add --prefix=test/arista-ansible-role-test --squash role-test master  
@@ -138,8 +138,8 @@ Developing Arista roles for Ansible
     remote: Total 59 (delta 14), reused 0 (delta 0), pack-reused 35  
     Unpacking objects: 100% (59/59), done.  
     From https://github.com/arista-eosplus/arista-ansible-role-test  
-     \* branch            master     -> FETCH_HEAD
-     \* [new branch]      master     -> role-test/master
+     &nbsp* branch            master     -> FETCH_HEAD
+     &nbsp* [new branch]      master     -> role-test/master
     Added dir 'test/arista-ansible-role-test'  
     ```
 
