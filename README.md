@@ -1,3 +1,4 @@
+
 IPv4 Role for EOS
 =================
 
@@ -12,6 +13,7 @@ address. As noted below, the arista.eos-interfaces role may be required prior
 to running this role as this role will not create the interface. This would
 be in the case of setting the MTU on a non-default interface, like a Port-Channel,
 as well as setting an IP address on a Loopback interface that isn't present.
+
 
 Installation
 ------------
@@ -28,6 +30,7 @@ Requires an SSH connection for connectivity to your Arista device. You can use
 any of the built-in eos connection variables, or the convenience ``provider``
 dictionary.
 
+
 Role Variables
 --------------
 
@@ -35,12 +38,12 @@ The tasks in this role are driven by the ``ip_interfaces`` object described belo
 
 **ip_interfaces** (list) each entry contains the following keys:
 
-|     Key | Type                      | Notes                                                                                                                                                                                                                       |
-|--------:|---------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-|    name | string (required)         | The unique interface identifier name. The interface name must use the full interface name (no abbreviated names). For example, interfaces should be specified as Ethernet1 not Et1                                          |
-| address | string                    | Configures the IPv4 address for the interface. The value must be in the form of A.B.C.D/E. The EOS default value for address is None                                                                                        |
+|     Key | Type                      | Notes                                    |
+| ------: | ------------------------- | ---------------------------------------- |
+|    name | string (required)         | The unique interface identifier name. The interface name must use the full interface name (no abbreviated names). For example, interfaces should be specified as Ethernet1 not Et1 |
+| address | string                    | Configures the IPv4 address for the interface. The value must be in the form of A.B.C.D/E. The EOS default value for address is None |
 |     mtu | string                    | Sets the IP interface MTU value. The MTU value defines the maximum transmission unit (or packet size) that can traverse the link. Valid values are in the range of 68 to 65535 bytes. The EOS default value for mtu is 1500 |
-|   state | choices: present*, absent | Set the state for the IP interface configuration. The interface IP address will be removed and the interface set back to switchport if set to absent.                                                                       |
+|   state | choices: present*, absent | Set the state for the IP interface configuration. The interface IP address will be removed and the interface set back to switchport if set to absent. |
 
 
 ```
@@ -72,6 +75,7 @@ the Ansible group_vars or host_vars directories, or in the playbook itself.
 Note: Asterisk (*) denotes the default value if none specified
 ```
 
+
 Ansible Variables
 -----------------
 
@@ -82,6 +86,7 @@ Ansible Variables
 ```
 Note: Asterisk (*) denotes the default value if none specified
 ```
+
 
 Dependencies
 ------------
@@ -127,7 +132,7 @@ Sample host_vars/leaf1.example.com
       use_ssl: no
       authorize: yes
       transport: cli
-
+    
     interfaces:
       - name: Loopback0
         enable: true
@@ -139,7 +144,7 @@ Sample host_vars/leaf1.example.com
       - name: Ethernet2
         description: "[BGP]Connection to Spine2"
         enable: true
-
+    
     ip_interfaces:
       - name: Loopback0
         address: 1.1.1.1/32
@@ -162,15 +167,14 @@ A simple playbook to configure BGP, leaf.yml
 Then run with:
 
     ansible-playbook -i hosts leaf.yml
-    
+​    
+
 
 Developer Information
 ------------
 
-Development contributions are welcome. Please see
-[test/arista-ansible-role-test/README]
-(https://github.com/arista-eosplus/arista-ansible-role-test/blob/master/README.md)
-for additional information, including running role tests for development.
+Development contributions are welcome. Please see [test/arista-ansible-role-test/README](test/arista-ansible-role-test/README.md) for additional information, including running role tests for development.
+
 
 
 
@@ -204,6 +208,7 @@ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
 CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 
 Author Information
 ------------------

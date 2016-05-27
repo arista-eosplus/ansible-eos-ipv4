@@ -124,37 +124,23 @@ Developing Arista roles for Ansible
 
 * Import the arista-ansible-role-test repository into the role as a new
   submodule. From the root of the role directory, issue the following commands:
-
-  * git submodule add https://github.com/arista-eosplus/arista-ansible-role-test.git test/arista-ansible-role-test
-  * git diff --cached --submodule
-  * git commit -am "Add arista-ansible-role-test submodule"
+  
+  * git remote add role-test https://github.com/arista-eosplus/arista-ansible-role-test.git  
+  * git subtree add --prefix=test/arista-ansible-role-test --squash role-test master  
     
     ```
-    --roletest-- >> git submodule add https://github.com/arista-eosplus/arista-ansible-role-test.git test/arista-ansible-role-test  
-    Cloning into 'test/arista-ansible-role-test'...  
-    remote: Counting objects: 29, done.  
-    remote: Compressing objects: 100% (21/21), done.  
-    remote: Total 29 (delta 10), reused 23 (delta 4), pack-reused 0  
-    Unpacking objects: 100% (29/29), done.  
-    Checking connectivity... done.  
-
-    --roletest-- >> git diff --cached --submodule  
-    diff --git a/.gitmodules b/.gitmodules  
-    new file mode 100644  
-    index 0000000..15da1b3  
-    --- /dev/null  
-    +++ b/.gitmodules  
-    @@ -0,0 +1,3 @@  
-    +[submodule "test/arista-ansible-role-test"]  
-    \+ path = test/arista-ansible-role-test  
-    \+ url = https://github.com/arista-eosplus/arista-ansible-role-test.git  
-    Submodule test/arista-ansible-role-test 0000000...f13f684 (new submodule)  
-
-    --roletest-- >> git commit -am "Add arista-ansible-role-test submodule"  
-    [roletest 8305130] Add arista-ansible-role-test submodule  
-     2 files changed, 4 insertions(+)  
-     create mode 100644 .gitmodules  
-     create mode 160000 test/arista-ansible-role-test  
+    --roletest-- >> git remote add role-test https://github.com/arista-eosplus/arista-ansible-role-test.git  
+    --roletest-- >> git subtree add --prefix=test/arista-ansible-role-test --squash role-test master  
+    git fetch role-test master  
+    warning: no common commits  
+    remote: Counting objects: 59, done.  
+    remote: Compressing objects: 100% (24/24), done.  
+    remote: Total 59 (delta 14), reused 0 (delta 0), pack-reused 35  
+    Unpacking objects: 100% (59/59), done.  
+    From https://github.com/arista-eosplus/arista-ansible-role-test  
+     \* branch            master     -> FETCH_HEAD
+     \* [new branch]      master     -> role-test/master
+    Added dir 'test/arista-ansible-role-test'  
     ```
 
 * Add test cases for the role:
