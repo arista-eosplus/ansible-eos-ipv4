@@ -1,14 +1,18 @@
-Arista Roles for Ansible Development Guidelines
-===============================================
+
+Arista Roles for Ansible - Development Guidelines
+=================================================
 
 #### Table of Contents
 
 1. [Running Role Tests] (#running-role-tests)
-    * [Overview] (#overview)
-    * [Details] (#details)
+   * [Overview] (#overview)
+   * [Details] (#details)
 2. [Developing Arista Roles For Ansible] (#developing-arista-roles-for-ansible)
-    * [Role Development Guidelines] (#role-development-guidelines)
-    * [Role Test Development] (#role-test-development)
+   * [Role Development Guidelines] (#role-development-guidelines)
+   * [Role Test Development] (#role-test-development)
+   * [Development for arista-ansible-role-test] (#Development for arista-ansible-role-test)
+
+
 
 Running role tests
 ------------------
@@ -28,23 +32,14 @@ This test framework should be used in a cloned copy of an Arista
 ansible-eos-* Ansible role. The framework will *not* execute properly in an
 ansible-galaxy installation of the role.
 
-The framework should be loaded as a submodule within the Arista role,
-in the test directory. If the test/arista-ansible-role-test directory of
-the role is empty, update the role repository by issuing the following
-commands from within the role repository:
-
-    git submodule init
-    git submodule update
-
-Alternatively, the repository may be cloned using the --recursive option,
-which will pull in the arista-ansible-role-test submodule as part of the
-clone process.
+The framework is included as a subtree within the Arista role, in the
+test/arista-ansible-role-test directory.
 
 To use the test framework in your local environment, you will first need
 to update the test/fixtures/hosts file (in the role repository) and the
 test/arista-ansible-role-test/group_vars/all.yml file (in the test framework
-repository). The hosts file should list your testing devices under the
-[test_hosts] section. The all.yml file should reflect the proper connection
+directory). The hosts file should list your testing devices under the
+`[test_hosts]` section. The all.yml file should reflect the proper connection
 parameters for your devices under the provider mapping.
 
 Once the files have been updated for your local environment, execute
@@ -100,6 +95,7 @@ Developing Arista roles for Ansible
   * tasks/main.yml*
   * templates/README.md
   * vars/main.yml*
+  * test/fixtures/hosts
 
   ```
   Note: Asterisk (*) indicates file should be reviewed for changes specific
@@ -113,48 +109,40 @@ Developing Arista roles for Ansible
 
 #### Role test development
 
-* Edit the role's README.md file to include the **Developer Information**
-  section. This should be copied from an existing role's README file.
+* Make sure the role's README.md file includes the **Developer Information**
+  section, which points to this document under the
+  <ansible-eos-role>/test/arista-ansible-role-test directory. This information
+  can be copied from an existing role's README file.
 
-* Create/copy the following files and folders from an existing Ansible EOS
-  role into the current role:
+* Create a testcases directory for the role:
 
-  * test/fixtures/hosts
-  * test/testcases/
-
-* Import the arista-ansible-role-test repository into the role as a new
-  submodule. From the root of the role directory, issue the following commands:
-
-  * git submodule add https://github.com/arista-eosplus/arista-ansible-role-test.git test/arista-ansible-role-test
-  * git diff --cached --submodule
-  * git commit -am "Add arista-ansible-role-test submodule"
-    
     ```
-    --roletest-- >> git submodule add https://github.com/arista-eosplus/arista-ansible-role-test.git test/arista-ansible-role-test  
-    Cloning into 'test/arista-ansible-role-test'...  
-    remote: Counting objects: 29, done.  
-    remote: Compressing objects: 100% (21/21), done.  
-    remote: Total 29 (delta 10), reused 23 (delta 4), pack-reused 0  
-    Unpacking objects: 100% (29/29), done.  
-    Checking connectivity... done.  
+    --roletest-- >> mkdir -p test/testcases/
+    ```
+    
+* Import the arista-ansible-role-test repository into the role as a subtree.
+  From the root of the role directory, issue the following commands:
 
-    --roletest-- >> git diff --cached --submodule  
-    diff --git a/.gitmodules b/.gitmodules  
-    new file mode 100644  
-    index 0000000..15da1b3  
-    --- /dev/null  
-    +++ b/.gitmodules  
-    @@ -0,0 +1,3 @@  
-    +[submodule "test/arista-ansible-role-test"]  
-    \+ path = test/arista-ansible-role-test  
-    \+ url = https://github.com/arista-eosplus/arista-ansible-role-test.git  
-    Submodule test/arista-ansible-role-test 0000000...f13f684 (new submodule)  
+  * git remote add role-test https[]()://github.com/arista-eosplus/arista-ansible-role-test.git  
+  * git subtree add --prefix=test/arista-ansible-role-test --squash role-test master  
 
-    --roletest-- >> git commit -am "Add arista-ansible-role-test submodule"  
-    [roletest 8305130] Add arista-ansible-role-test submodule  
-     2 files changed, 4 insertions(+)  
-     create mode 100644 .gitmodules  
-     create mode 160000 test/arista-ansible-role-test  
+    ```
+    NOTE: These commands must be issued from a clean repo branch without any
+    pending changes or commits. The `git subtree add` command will generate
+    a commit to add the external repo to the working repository.
+    
+    --roletest-- >> git remote add role-test https://github.com/arista-eosplus/arista-ansible-role-test.git  
+    --roletest-- >> git subtree add --prefix=test/arista-ansible-role-test --squash role-test master  
+    git fetch role-test master  
+    warning: no common commits  
+    remote: Counting objects: 59, done.  
+    remote: Compressing objects: 100% (24/24), done.  
+    remote: Total 59 (delta 14), reused 0 (delta 0), pack-reused 35  
+    Unpacking objects: 100% (59/59), done.  
+    From https://github.com/arista-eosplus/arista-ansible-role-test  
+      * branch            master     -> FETCH_HEAD
+      * [new branch]      master     -> role-test/master
+    Added dir 'test/arista-ansible-role-test'  
     ```
 
 * Add test cases for the role:
@@ -172,6 +160,45 @@ Developing Arista roles for Ansible
 
 
 *XXX Information specific to writing test cases and ensuring the test framework has been included as a submodule goes here*
+
+#### Development for arista-ansible-role-test
+
+Because the arista-ansible-role-test framework repository has been included
+as a subtree, direct modification of the test framework files is possible.
+If you need to make changes to the framework itself, please follow the steps
+outlined below, to make the propagation of the changes to the main 
+framework repo as smooth as possible.
+
+For the purposes of the instructions below, `role repo` refers to the base 
+repository of the role being worked on (e.g. ansible-eos-vxlan), and
+`framework repo` refers to the arista-ansible-role-test repository that was
+imported as a subtree, i.e. everything under the /test/arista-ansible-role-test
+directory in the role repo.
+
+* Always make sure you have the latest changes for the framework repo
+  in your local repository by issuing the command at the root of your role repo.
+
+      git subtree pull --prefix=test/arista-ansible-role-test --squash role-test master
+
+* Please keep commits to files in the framework directory 
+  (test/arista-ansible-role-test) separate from commits to the rest
+  of the role repo. This helps keep commit messages specific
+  to the framework repo itself.
+* Changes to the framework files must be committed to the role repo
+  before being pushed to the framework repo. (git commit the framework 
+  changes as part of the role repo before pushing the changes to the
+  framework repo) 
+* To push the changes to the framework repo, enter the following command
+  at the root of the role repo, where `<branch>` is the name of a branch on
+  the framework repo where the changes will be pushed. This branch will be
+  created if it does not exist.
+
+      git subtree push --prefix=test/arista-ansible-role-test --squash role-test <branch>
+
+* Make a pull request for the changes by visiting the [framework repo website]
+  (https://github.com/arista-eosplus/arista-ansible-role-test.git). There
+  you may create a new pull request for the branch you pushed the changes to.
+
 
 
 License
@@ -204,6 +231,7 @@ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
 CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 
 Author Information
 ------------------
