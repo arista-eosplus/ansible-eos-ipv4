@@ -5,32 +5,43 @@
 
 {% if state == 'absent' %}
 interface {{ item.name }}
- {% if not item.name | re_search('[Ll]oopback|[Vv]lan') %}
-   switchport
- {% endif %}
+   {% if not item.name | re_search('[Ll]oopback|[Vv]lan') %}
 
- {# If we find existing switchport config, then default settings #}
- {# These default commands only run the first time absent is called #}
- {% set switchport_block = _eos_config | config_block('interface ' ~ item.name, indent=3) %}
-   {% if switchport_block %}
-    {% if switchport_block | join('\n') | re_search('^ip address') %}
-   default ip address
-   default mtu
-    {% endif %}
+   switchport
+
    {% endif %}
 
+   {# If we find existing switchport config, then default settings #}
+   {# These default commands only run the first time absent is called #}
+   {% set switchport_block = _eos_config | config_block('interface ' ~ item.name, indent=3) %}
+   {% if switchport_block %}
+      {% if switchport_block | join('\n') | re_search('^ip address') %}
+
+   default ip address
+   default mtu
+
+      {% endif %}
+   {% endif %} {# switchport_block #}
+
 {% elif state == 'present' %}
+
 interface {{ item.name }}
- {% if not item.name | re_search('[Ll]oopback|[Vv]lan') %}
+
+   {% if not item.name | re_search('[Ll]oopback|[Vv]lan') %}
+
    no switchport
- {% endif %}
 
- {% if 'address' in item %}
+   {% endif %}
+
+   {% if 'address' in item %}
+
    ip address {{ item.address }}
- {% endif %}
 
- {% if 'mtu' in item %}
+   {% endif %}
+
+   {% if 'mtu' in item %}
+
    mtu {{ item.mtu }}
- {% endif %}
 
-{% endif %}
+   {% endif %}
+{% endif %} {# state #}
