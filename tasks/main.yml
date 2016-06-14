@@ -35,5 +35,6 @@
     transport: "{{ transport | default(omit) }}"
     use_ssl: "{{ use_ssl | default(omit) }}"
     username: "{{ username | default(omit) }}"
+  notify: save running config
   when: ip_interfaces is defined
   with_items: '{{ ip_interfaces }}'
