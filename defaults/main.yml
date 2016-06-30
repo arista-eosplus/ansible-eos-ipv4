@@ -1,4 +1,5 @@
 ---
 # defaults file for eos-ipv4
+eos_save_running_config: true
 
 default_ipv4_state: present
