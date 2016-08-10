@@ -43,7 +43,9 @@ galaxy_info:
   galaxy_tags:
     - arista
     - eos
+    - eosplusdev
     - networking
+    - role
 
 dependencies:
   - arista.eos-interfaces
