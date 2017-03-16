@@ -179,10 +179,9 @@ testcases:
          mtu 1400
     absent: |
       interface Ethernet2
-         ip address 10.1.1.50/24
          mtu 7500
       interface Ethernet3
-         ip address 10.1.1.60/24
+         ip address 10.2.2.60/24
          mtu 7500
       interface Loopback0
          ip address 6.6.6.6/32
@@ -277,7 +276,7 @@ testcases:
          mtu 1400
     absent: |
       interface Ethernet3
-         ip address 10.1.1.60/24
+         ip address 10.2.2.60/24
          mtu 7500
       interface Loopback1
          ip address 7.7.7.7/32
