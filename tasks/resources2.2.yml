@@ -1,0 +1,20 @@
+# Perform the EOS IPv4 tasks under Ansible 2.2 or later
+# using the Ansible eos_config module
+
+- name: Arista EOS IPv4 resources (Ansible >= 2.1)
+  eos_config:
+    src: ipv4.j2
+    defaults: True
+    config: "{{ base_config | default(omit) }}"
+    provider: "{{ provider | default(omit) }}"
+    auth_pass: "{{ auth_pass | default(omit) }}"
+    authorize: "{{ authorize | default(omit) }}"
+    host: "{{ host | default(omit) }}"
+    password: "{{ password | default(omit) }}"
+    port: "{{ port | default(omit) }}"
+    transport: "{{ transport | default(omit) }}"
+    use_ssl: "{{ use_ssl | default(omit) }}"
+    username: "{{ username | default(omit) }}"
+  notify: save running config
+  when: ip_interfaces is defined
+  with_items: '{{ ip_interfaces }}'
