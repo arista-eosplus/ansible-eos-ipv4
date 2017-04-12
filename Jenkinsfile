@@ -41,20 +41,20 @@ pipeline {
     post {
         failure {
             // Send an email with a link to logs on failure
-            mail to: env.emailTo
+            mail to: env.emailTo,
                  from: env.emailFrom,
                  subject: "${env.projectName} ${env.JOB_NAME} (${env.BUILD_NUMBER}) build failed",
                  body: "${env.JOB_NAME} (${env.BUILD_NUMBER}) ${env.projectName} build error " +
-                       "is here: ${env.BUILD_URL}\nStarted by ${env.BUILD_CAUSE}" ,
+                       "is here: ${env.BUILD_URL}\nStarted by ${env.BUILD_CAUSE}"
         }
         success {
             // Send an email notification on success
-            mail to: env.emailTo
+            mail to: env.emailTo,
                  from: env.emailFrom,
                  subject: "${env.projectName} ${env.JOB_NAME} (${env.BUILD_NUMBER}) build successful",
                  body: "${env.JOB_NAME} (${env.BUILD_NUMBER}) ${env.projectName} build successful\n" +
                        "Started by ${env.BUILD_CAUSE}\n" +
-                       "${env.BUILD_URL}",
+                       "${env.BUILD_URL}"
         }
     }
 }
