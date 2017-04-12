@@ -25,13 +25,7 @@ pipeline {
     stages {
         stage ('Run tests for ansible-eos-ipv4 role') {
             steps {
-                // Lock the Ansible-Role-Test 'resource' to prevent multiple
-                // instances of the role test build from attempting to
-                // run simultaneously. Forces a sequential queue for all roles.
-                lock('Ansible-Role-Test') {
-                    build job: 'Ansible-Role-Test',
-                          parameters: [string(name: 'ROLE_NAME', value: 'ansible-eos-ipv4')]
-                }
+                    build job: 'gar-test-starter'
             }
             when {
                 // Only run against 'master' branch
