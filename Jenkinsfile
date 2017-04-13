@@ -25,7 +25,8 @@ pipeline {
     stages {
         stage ('Run tests for ansible-eos-ipv4 role') {
             steps {
-                    build job: 'gar-test-starter'
+                    build job: 'gar-test-starter',
+                          parameters: [string(name: 'ROLE_NAME', value: 'ansible-eos-ipv4')]
             }
             when {
                 // Only run against 'master' branch
