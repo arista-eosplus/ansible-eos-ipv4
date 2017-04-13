@@ -25,8 +25,10 @@ pipeline {
     stages {
         stage ('Run tests for ansible-eos-ipv4 role') {
             steps {
+                    sh 'git rev-parse HEAD > revision'
                     build job: 'gar-test-starter',
-                          parameters: [string(name: 'ROLE_NAME', value: 'ansible-eos-ipv4')]
+                          parameters: [string(name: 'ROLE_NAME', value: 'ansible-eos-ipv4'),
+                                       string(name: 'REVISION', value: readFile('revision'))]
             }
             when {
                 // Only run against 'master' branch
