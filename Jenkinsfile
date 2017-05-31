@@ -32,7 +32,7 @@ pipeline {
             steps {
                 // Grab the revision hash and pass it to the test build
                 sh 'git rev-parse HEAD > revision'
-                build job: 'Ansible-Role-Test-Repo-Change',
+                build job: 'Ansible-Role-Test-Starter',
                       parameters: [
                           string(name: 'ROLE_NAME', value: 'ansible-eos-ipv4'),
                           string(name: 'REVISION', value: readFile('revision'))
