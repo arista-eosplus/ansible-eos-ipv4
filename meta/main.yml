@@ -47,5 +47,4 @@ galaxy_info:
     - networking
     - role
 
-dependencies:
-  - arista.eos-interfaces
+dependencies: []

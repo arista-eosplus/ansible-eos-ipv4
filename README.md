@@ -102,7 +102,7 @@ Dependencies
 ------------
 
 This role requires the underlying interface to be created before you set
-an IP address or the MTU. This implies that we must use the arista.eos-interfaces
+an IP address or the MTU. This implies that we should use the arista.eos-interfaces
 role in conjunction with arista.eos-ipv4.  You do not need to include the role
 in your playbook, simply create the ``interfaces`` list documented in the
 arista.eos-interfaces README.
@@ -111,7 +111,7 @@ The arista.eos-ipv4 role is built on modules included in the core Ansible code.
 These modules were added in ansible version 2.1.0.
 
 - Ansible 2.1.0
-- arista.eos-interfaces
+- arista.eos-interfaces (not strictly required, but recommended to create the interfaces)
 
 See the example below for more information.
 
@@ -142,7 +142,7 @@ Sample host_vars/leaf1.example.com
       use_ssl: no
       authorize: yes
       transport: cli
-    
+
     interfaces:
       - name: Loopback0
         enable: true
@@ -154,7 +154,7 @@ Sample host_vars/leaf1.example.com
       - name: Ethernet2
         description: "[BGP]Connection to Spine2"
         enable: true
-    
+
     ip_interfaces:
       - name: Loopback0
         address: 1.1.1.1/32
@@ -177,7 +177,7 @@ A simple playbook to configure BGP, leaf.yml
 Then run with:
 
     ansible-playbook -i hosts leaf.yml
-​    
+
 
 
 Developer Information
