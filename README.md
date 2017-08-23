@@ -38,12 +38,13 @@ The tasks in this role are driven by the ``ip_interfaces`` object described belo
 
 **ip_interfaces** (list) each entry contains the following keys:
 
-|     Key | Type                      | Notes                                    |
-| ------: | ------------------------- | ---------------------------------------- |
-|    name | string (required)         | The unique interface identifier name. The interface name must use the full interface name (no abbreviated names). For example, interfaces should be specified as Ethernet1 not Et1 |
-| address | string                    | Configures the IPv4 address for the interface. The value must be in the form of A.B.C.D/E. The EOS default value for address is None |
-|     mtu | string                    | Sets the IP interface MTU value. The MTU value defines the maximum transmission unit (or packet size) that can traverse the link. Valid values are in the range of 68 to 65535 bytes. The EOS default value for mtu is 1500 |
-|   state | choices: present*, absent | Set the state for the IP interface configuration. The interface IP address will be removed and the interface set back to switchport if set to absent. |
+|             Key | Type                      | Notes                                    |
+| --------------: | ------------------------- | ---------------------------------------- |
+|            name | string (required)         | The unique interface identifier name. The interface name must use the full interface name (no abbreviated names). For example, interfaces should be specified as Ethernet1 not Et1 |
+|         address | string                    | Configures the IPv4 address for the interface. The value must be in the form of A.B.C.D/E. The EOS default value for address is None |
+| secondary_addrs | list                      | Configures each IPv4 address as a secondary address for the interface. The value must be in the form of A.B.C.D/E. |
+|             mtu | string                    | Sets the IP interface MTU value. The MTU value defines the maximum transmission unit (or packet size) that can traverse the link. Valid values are in the range of 68 to 65535 bytes. The EOS default value for mtu is 1500 |
+|           state | choices: present*, absent | Set the state for the IP interface configuration. The interface IP address will be removed and the interface set back to switchport if set to absent. |
 
 
 ```
@@ -162,6 +163,9 @@ Sample host_vars/leaf1.example.com
         address: 2.2.2.1/32
       - name: Ethernet1
         address: 10.1.1.0/31
+        secondary_addrs:
+          - 10.2.2.0/31
+          - 10.3.3.0/31
         mtu: 9000
       - name: Ethernet2
         address: 10.1.1.2/31

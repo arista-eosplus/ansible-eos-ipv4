@@ -124,9 +124,12 @@ testcases:
         - name: Ethernet2
           address: 10.1.1.2/31
           mtu: 9000
+          secondary_addrs: [9.9.9.9/31, 8.8.8.8/31]
         - name: Ethernet3
           address: 10.1.1.0/31
           mtu: 9000
+          secondary_addrs:
+            - 4.4.4.4/31
         - name: Loopback0
           address: 1.1.1.1/32
         - name: Loopback1
@@ -163,9 +166,12 @@ testcases:
     present: |
       interface Ethernet2
          ip address 10.1.1.2/31
+         ip address 9.9.9.9/31 secondary
+         ip address 8.8.8.8/31 secondary
          mtu 9000
       interface Ethernet3
          ip address 10.1.1.0/31
+         ip address 4.4.4.4/31 secondary
          mtu 9000
       interface Loopback0
          ip address 1.1.1.1/32

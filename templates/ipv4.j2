@@ -39,6 +39,16 @@ interface {{ item.name }}
 
    {% endif %}
 
+   {% if 'secondary_addrs' in item %}
+
+      {% for sec_addr in item.secondary_addrs %}
+
+   ip address {{ sec_addr }} secondary
+
+      {% endfor %}
+
+   {% endif %}
+
    {% if 'mtu' in item %}
 
    mtu {{ item.mtu }}
